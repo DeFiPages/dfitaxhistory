@@ -25,28 +25,24 @@ export const historyItemSchema = {
   }
 }
 
-export function historyColumns(currency: string) {
+export function historyColumns(currency: string, columnWidths: number[] = []): kendo.ui.GridColumn[] {
   return [
-    { field: 'dt', title: 'Date', width: 120, format: "{0:dd.MM.yy HH:mm:ss}" },
-    { field: 'blk_id', title: 'Block', width: 70, template: '<a href="https://defiscan.live/blocks/${blk_id}" target="_blank">${blk_id}</a>' },
-    { field: 'adr', title: "Address", width: 70, filterable: { multi: true, search: true }, template: '<a href="https://defiscan.live/address/${adr}" target="_blank">${adr}</a>' },
-    { field: 'tx_id', title: "tx", width: 50, template: '<a href="https://defiscan.live/transactions/${tx_id}" target="_blank">${tx_id}</a>' },
-    { field: 'cat', title: "Category", width: 100, filterable: { multi: true } },
-    { field: 'debit1Qty', title: 'D1.Qty', width: 85, format: "{0:n}" },
-    { field: 'debit1Code', title: 'D1.Code', width: 85, filterable: { multi: true } },
-    // { field: 'debit1Value', title: 'D1.Value', width: 85, format: "{0:n}" },
-    { field: 'debit2Qty', title: 'D2.Qty', width: 85, format: "{0:n}" },
-    { field: 'debit2Code', title: 'D2.Code', width: 85, filterable: { multi: true } },
-    // { field: 'debit2Value', title: 'D2.Value', width: 85, format: "{0:n}" },
-    { field: 'credit1Qty', title: 'C1.Qty', width: 85, format: "{0:n}" },
-    { field: 'credit1Code', title: 'C1.Code', width: 85, filterable: { multi: true } },
-    // { field: 'credit1Value', title: 'C1.Value', width: 85, format: "{0:n}" },
-    { field: 'credit2Qty', title: 'C2.Qty', width: 85, format: "{0:n}" },
-    { field: 'credit2Code', title: 'C2.Code', width: 85, filterable: { multi: true } },
-    // { field: 'credit2Value', title: 'C2.Value', width: 85, format: "{0:n}" },
-    { field: 'value', width: 100, format: "{0:n} " + currency },
-    { field: 'fee_qty', width:80, format: "{0:e3}" },
-    { field: 'fee_value', format: "{0:e3}" },
+    { field: 'dt', title: 'Date', width: columnWidths[0] || 120, format: "{0:dd.MM.yy HH:mm:ss}" },
+    { field: 'blk_id', title: 'Block', width: columnWidths[1] || 70, template: '<a href="https://defiscan.live/blocks/${blk_id}" target="_blank">${blk_id}</a>' },
+    { field: 'adr', title: "Address", width:columnWidths[2] || 70, filterable: { multi: true, search: true }, template: '<a href="https://defiscan.live/address/${adr}" target="_blank">${adr}</a>' },
+    { field: 'tx_id', title: "tx", width: columnWidths[3] || 50, template: '<a href="https://defiscan.live/transactions/${tx_id}" target="_blank">${tx_id}</a>' },
+    { field: 'cat', title: "Category", width: columnWidths[4] || 100, filterable: { multi: true } },
+    { field: 'debit1Qty', title: 'D1.Qty', width: columnWidths[5] || 85, format: "{0:n}" },
+    { field: 'debit1Code', title: 'D1.Code', width: columnWidths[6] || 85, filterable: { multi: true } },
+    { field: 'debit2Qty', title: 'D2.Qty', width: columnWidths[7] || 85, format: "{0:n}" },
+    { field: 'debit2Code', title: 'D2.Code', width: columnWidths[8] || 85, filterable: { multi: true } },
+    { field: 'credit1Qty', title: 'C1.Qty', width: columnWidths[9] || 85, format: "{0:n}" },
+    { field: 'credit1Code', title: 'C1.Code', width: columnWidths[10] || 85, filterable: { multi: true } },
+    { field: 'credit2Qty', title: 'C2.Qty', width: columnWidths[11] || 85, format: "{0:n}" },
+    { field: 'credit2Code', title: 'C2.Code', width: columnWidths[12] || 85, filterable: { multi: true } },
+    { field: 'value', width: columnWidths[13] || 100, format: "{0:n} " + currency },
+    { field: 'fee_qty', width: columnWidths[14] || 80 , format: "{0:#.########}"},
+    { field: 'fee_value' , format: "{0:#.########}"},
   ]
 }
 

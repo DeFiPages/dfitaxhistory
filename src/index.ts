@@ -6,7 +6,6 @@ const configUrl = 'https://api.dfi.tax/v02/cfg/get/';
 
 var currency = ""
 
-// var toolbar!: kendo.ui.ToolBar ;
 var grid: kendo.ui.Grid;
 let textboxAccessKey: kendo.ui.TextBox;
 let yearTextbox: kendo.ui.NumericTextBox;
@@ -14,7 +13,7 @@ let monthTextbox: kendo.ui.NumericTextBox;
 var historyData: any;
 
 async function init() {
-
+  const columnWidths = JSON.parse(localStorage.getItem("columnWidths") || "[]");
   grid = $("#grid").kendoGrid({
     toolbar: [
       { template: "<label>Access key:</label>" },
@@ -30,8 +29,9 @@ async function init() {
       data: historyData,
       schema: historyItemSchema
     },
-    columns: historyColumns(currency),
+    columns: historyColumns(currency, columnWidths),
     sortable: true,
+    resizable: true,
     filterable: true,
     // pageable: { pageSizes: [25, 50, 100, "All"] }
     excel: {
@@ -51,6 +51,11 @@ async function init() {
         }
       }
     },
+    columnResize: function (e: kendo.ui.GridColumnResizeEvent) {
+      const columnWidths: number[] = [];
+      grid.columns.forEach((column: any) => { columnWidths.push(column.width); });
+      localStorage.setItem("columnWidths", JSON.stringify(columnWidths));
+    },
   }).data("kendoGrid")!;
   grid.thead.kendoTooltip({ filter: "th", content: historyTooltip });
 
@@ -61,6 +66,7 @@ async function init() {
     else
       return defaulValue;
   }
+
   textboxAccessKey = $("#accessKey").kendoTextBox({
     value: GetLocalStorage('accessKey', ""),
   }).data("kendoTextBox")!;
@@ -105,7 +111,6 @@ async function init() {
       }
     }
   })
-
 }
 
 // Wait until DOM is loaded
