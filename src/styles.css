@@ -1,0 +1,24 @@
+   /* allign grid to window*/
+   html,
+   body,
+   #parent, #grid
+    {
+     margin: 0;
+     padding: 0;
+     border-width: 0;
+     height: 100%;
+   }
+  
+   /* #grid {
+    height: calc(100% - 50px); /* subtract height of the toolbar  
+  } */
+
+   html {
+     overflow: hidden;
+     font: 13px sans-serif;
+   }
+
+   /* grid cell no vertical padding*/
+   .k-grid tbody td {
+     padding: 0px 5px 0px 5px;
+   }

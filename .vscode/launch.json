@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:9000",
+      "webRoot": "${workspaceFolder}/src",
+      "sourceMaps": true,
+      "runtimeArgs": ["--disable-extensions"]
+    },
+    {
+      "name": "Debug Webpack",
+      "type": "node",
+      "request": "launch",
+      "args": ["webpack", "--mode=development", "--watch"],
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "npm",
+      "windows": {
+        "runtimeExecutable": "npm.cmd"
+      }
+    }
+  ]
+}
