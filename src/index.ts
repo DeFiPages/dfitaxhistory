@@ -108,6 +108,7 @@ async function init() {
         localStorage.setItem('accessKey', JSON.stringify(accKey));
         localStorage.setItem('dfitaxhistory.year', JSON.stringify(year));
         localStorage.setItem('dfitaxhistory.month', JSON.stringify(month));
+        grid.thead.kendoTooltip({ filter: "th", content: historyTooltip });
       }
     }
   })
