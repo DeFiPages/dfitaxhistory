@@ -13,7 +13,7 @@ let monthTextbox: kendo.ui.NumericTextBox;
 var historyData: any;
 
 async function init() {
-  const columnWidths = JSON.parse(localStorage.getItem("columnWidths") || "[]");
+  const columnWidths = JSON.parse(localStorage.getItem("dfitaxhistory.colWidths") || "[]");
   grid = $("#grid").kendoGrid({
     toolbar: [
       { template: "<label>Access key:</label>" },
@@ -54,7 +54,7 @@ async function init() {
     columnResize: function (e: kendo.ui.GridColumnResizeEvent) {
       const columnWidths: number[] = [];
       grid.columns.forEach((column: any) => { columnWidths.push(column.width); });
-      localStorage.setItem("columnWidths", JSON.stringify(columnWidths));
+      localStorage.setItem("dfitaxhistory.colWidths", JSON.stringify(columnWidths));
     },
   }).data("kendoGrid")!;
   grid.thead.kendoTooltip({ filter: "th", content: historyTooltip });
@@ -75,14 +75,14 @@ async function init() {
   yearTextbox = $("#yearTexbox").kendoNumericTextBox({
     format: "#",
     decimals: 0,
-    value: GetLocalStorage('year', 2023),
+    value: GetLocalStorage('dfitaxhistory.year', 2023),
     min: 2019
   }).data("kendoNumericTextBox")!;
 
   monthTextbox = $("#monthTexbox").kendoNumericTextBox({
     format: "#",
     decimals: 0,
-    value: GetLocalStorage('month', 0),
+    value: GetLocalStorage('dfitaxhistory.month', 0),
     min: 0,
     max: 12
   }).data("kendoNumericTextBox")!;
@@ -106,8 +106,8 @@ async function init() {
       } else {
         grid.setDataSource(historyData);
         localStorage.setItem('accessKey', JSON.stringify(accKey));
-        localStorage.setItem('year', JSON.stringify(year));
-        localStorage.setItem('month', JSON.stringify(month));
+        localStorage.setItem('dfitaxhistory.year', JSON.stringify(year));
+        localStorage.setItem('dfitaxhistory.month', JSON.stringify(month));
       }
     }
   })
