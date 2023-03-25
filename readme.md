@@ -26,6 +26,10 @@ This project is a web application that helps users retrieve and display their DF
 6. Use the grid's features to sort, filter, and resize columns as needed.
 7. Click the "Excel" button to export the data to an Excel file.
 
+## Publish
+1. Run `npm build`
+1. Run `npm deploy`
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
