@@ -1,14 +1,13 @@
 {
-  "name": "my-project",
+  "name": "dfitaxhistory-project",
   "version": "1.0.0",
-  "description": "My TypeScript and Webpack project",
+  "description": "Show history from the api of dfi.tax.",
   "main": "index.js",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --mode production",
     "start": "cross-env NODE_ENV=development webpack serve --mode development",
     "deploy": "gh-pages -d dist"
   },
-  "author": "John Doe",
   "license": "MIT",
   "devDependencies": {
     "clean-webpack-plugin": "^4.0.0",
