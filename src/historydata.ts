@@ -1,3 +1,8 @@
+import {config} from './configdata'
+
+/**
+ * The schema definition for the history item model.
+ */
 export const historyItemSchema = {
   model: {
     fields: {
@@ -25,7 +30,13 @@ export const historyItemSchema = {
   }
 }
 
-export function historyColumns(currency: string, columnWidths: number[] = []): kendo.ui.GridColumn[] {
+/**
+ * Returns an array of columns for the history table.
+ * 
+ * @param {number[]} columnWidths - Optional array of column widths.
+ * @returns {kendo.ui.GridColumn[]} An array of Kendo UI GridColumn objects.
+ */
+export function historyColumns(columnWidths: number[] = []): kendo.ui.GridColumn[] {
   return [
     { field: 'dt', title: 'Date', width: columnWidths[0] || 120, format: "{0:dd.MM.yy HH:mm:ss}" },
     { field: 'blk_id', title: 'Block', width: columnWidths[1] || 70, template: '<a href="https://defiscan.live/blocks/${blk_id}" target="_blank">${blk_id}</a>' },
@@ -40,12 +51,18 @@ export function historyColumns(currency: string, columnWidths: number[] = []): k
     { field: 'credit1Code', title: 'C1.Code', width: columnWidths[10] || 85, filterable: { multi: true } },
     { field: 'credit2Qty', title: 'C2.Qty', width: columnWidths[11] || 85, format: "{0:n}" },
     { field: 'credit2Code', title: 'C2.Code', width: columnWidths[12] || 85, filterable: { multi: true } },
-    { field: 'value', width: columnWidths[13] || 100, format: "{0:n} " + currency },
+    { field: 'value', width: columnWidths[13] || 100, format: "{0:n}"},
     { field: 'fee_qty', width: columnWidths[14] || 80 , format: "{0:#.########}"},
     { field: 'fee_value' , format: "{0:#.########}"},
   ]
 }
 
+/**
+ * Returns a tooltip text for a given table column.
+ * 
+ * @param {any} e - Event data.
+ * @returns {string} Tooltip text.
+ */
 export function historyTooltip(e: any) {
   var text = e.target.text().trim(); // element for which the tooltip is shown
   switch (text) {
@@ -61,11 +78,20 @@ export function historyTooltip(e: any) {
     case "C2.Qty": return "Credit 2 Quantity";
     case "C2.Code": return "Credit 2 Token Code";
     case "C2.Value": return "Credit 2 Value";
+    case "value": return "value in " + config?.cur_code;
+    case "fee_value": return "fee in " + config?.cur_code;
     default:
       return text;
   }
 }
 
+/**
+ * Fetches history data from the given API URL.
+ * 
+ * @param {string} apiUrl - The URL to fetch the history data from.
+ * @returns {Promise<string | HistoryItem[]>} A promise that resolves to an array of history items
+ * or an error message string in case of an error.
+ */
 export async function fetchHistoryData(apiUrl: string) {
   try {
     const response = await fetch(apiUrl);
@@ -78,12 +104,18 @@ export async function fetchHistoryData(apiUrl: string) {
   }
 }
 
+/**
+ * Interface for a token object.
+ */
 interface Token {
   code: string;
   qty: number;
   value?: number;
 }
 
+/**
+ * Interface for a processed history item used in the application.
+ */
 interface HistoryApiItem {
   dt: string;
   adr: string;
@@ -96,6 +128,9 @@ interface HistoryApiItem {
   tokens: Token[];
 }
 
+/**
+ * Interface for a processed history item used in the application.
+ */
 interface HistoryItem {
   dt: Date;
   adr: string;
@@ -119,6 +154,13 @@ interface HistoryItem {
   credit2Value?: number;
 }
 
+/**
+ * Processes a raw history item received from the API and returns
+ * a history item object used in the application.
+ * 
+ * @param {HistoryApiItem} item - A raw history item received from the API.
+ * @returns {HistoryItem} A processed history item object.
+ */
 function historyData(item: HistoryApiItem): HistoryItem {
   const historyItem: HistoryItem = {
     dt: new Date(item.dt),
