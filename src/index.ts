@@ -45,12 +45,21 @@ async function init() {
     ],
     dataSource: {
       data: historyData,
-      schema: historyItemSchema
+      schema: historyItemSchema,
+      aggregate: [
+        { field: "value", aggregate: "sum" },
+      ]
     },
     columns: historyColumns(columnWidths),
     sortable: true,
     resizable: true,
     filterable: true,
+    filterMenuInit: function (e) {
+      if (e.field?.startsWith("adr")) {
+        e.container?.addClass("widerMenu");
+      }
+    },
+
     // pageable: { pageSizes: [25, 50, 100, "All"] }
     excel: {
       fileName: "dfitax_history.xlsx",
@@ -114,11 +123,12 @@ async function init() {
           if (typeof historyData === "string") {
             alert(historyData);
           } else {
-            grid.setDataSource(historyData);
+            grid.dataSource.data(historyData); //assign new data without loosing schema, tooltip filter
             localStorage.setItem('accessKey', JSON.stringify(accKey));
             localStorage.setItem('dfitaxhistory.year', JSON.stringify(year));
             localStorage.setItem('dfitaxhistory.month', JSON.stringify(month));
-            grid.thead.kendoTooltip({ filter: "th", content: historyTooltip });
+            //we have new data: reinit the Multticheck Filter
+            $('.k-filterable').each((index, element) => $(element).data("kendoFilterMultiCheck")?._init());
           }
         }
       }
