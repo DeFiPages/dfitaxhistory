@@ -1,17 +1,13 @@
    /* allign grid to window*/
    html,
    body,
-   #parent, #grid
-    {
+   #parent,
+   #grid {
      margin: 0;
      padding: 0;
      border-width: 0;
      height: 100%;
    }
-  
-   /* #grid {
-    height: calc(100% - 50px); /* subtract height of the toolbar  
-  } */
 
    html {
      overflow: hidden;
@@ -21,4 +17,14 @@
    /* grid cell no vertical padding*/
    .k-grid tbody td {
      padding: 0px 5px 0px 5px;
+   }
+
+
+   /* wider Filtermenu */
+   .k-animation-container>form.widerMenu {
+     width: 400px !important;
+   }
+
+   .widerMenu .k-filter-menu-container {
+     width: 100% !important;
    }
