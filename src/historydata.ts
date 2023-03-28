@@ -19,7 +19,8 @@ export const historyItemSchema = {
       credit2Code: { type: "string" },
       credit2Qty: { type: "number" },
       credit2Value: { type: "number" },
-      adr: { type: "string" },
+      adr1: { type: "string" },
+      adr2: { type: "string" },
       cat: { type: "string" },
       tx_id: { type: "string" },
       blkid: { type: "number" },
@@ -29,6 +30,12 @@ export const historyItemSchema = {
     },
   }
 }
+
+
+
+// function in templates must be in global scope
+const _global = (window /* browser */ || global /* node */) as any
+_global.currencyCode = () =>  config?.cur_code ?? ""
 
 /**
  * Returns an array of columns for the history table.
@@ -40,19 +47,20 @@ export function historyColumns(columnWidths: number[] = []): kendo.ui.GridColumn
   return [
     { field: 'dt', title: 'Date', width: columnWidths[0] || 120, format: "{0:dd.MM.yy HH:mm:ss}" },
     { field: 'blk_id', title: 'Block', width: columnWidths[1] || 70, template: '<a href="https://defiscan.live/blocks/${blk_id}" target="_blank">${blk_id}</a>' },
-    { field: 'adr', title: "Address", width:columnWidths[2] || 70, filterable: { multi: true, search: true }, template: '<a href="https://defiscan.live/address/${adr}" target="_blank">${adr}</a>' },
-    { field: 'tx_id', title: "tx", width: columnWidths[3] || 50, template: '<a href="https://defiscan.live/transactions/${tx_id}" target="_blank">${tx_id}</a>' },
-    { field: 'cat', title: "Category", width: columnWidths[4] || 100, filterable: { multi: true } },
-    { field: 'debit1Qty', title: 'D1.Qty', width: columnWidths[5] || 85, format: "{0:n}" },
-    { field: 'debit1Code', title: 'D1.Code', width: columnWidths[6] || 85, filterable: { multi: true } },
-    { field: 'debit2Qty', title: 'D2.Qty', width: columnWidths[7] || 85, format: "{0:n}" },
-    { field: 'debit2Code', title: 'D2.Code', width: columnWidths[8] || 85, filterable: { multi: true } },
-    { field: 'credit1Qty', title: 'C1.Qty', width: columnWidths[9] || 85, format: "{0:n}" },
-    { field: 'credit1Code', title: 'C1.Code', width: columnWidths[10] || 85, filterable: { multi: true } },
-    { field: 'credit2Qty', title: 'C2.Qty', width: columnWidths[11] || 85, format: "{0:n}" },
-    { field: 'credit2Code', title: 'C2.Code', width: columnWidths[12] || 85, filterable: { multi: true } },
-    { field: 'value', width: columnWidths[13] || 100, format: "{0:n}"},
-    { field: 'fee_qty', width: columnWidths[14] || 80 , format: "{0:#.########}"},
+    { field: 'adr1', title: "Addr1", width:columnWidths[2] || 70, filterable: { multi: true, search: true }, template: '<a href="https://defiscan.live/address/${adr1}" target="_blank">${adr1}</a>'},
+    { field: 'adr2', title: "Addr2", width:columnWidths[3] || 70, filterable: { multi: true, search: true }, template: '<a href="https://defiscan.live/address/${adr2}" target="_blank">${adr2}</a>'},
+    { field: 'tx_id', title: "tx", width: columnWidths[4] || 50, template: '<a href="https://defiscan.live/transactions/${tx_id}" target="_blank">${tx_id}</a>' },
+    { field: 'cat', title: "Category", width: columnWidths[5] || 100, filterable: { multi: true } },
+    { field: 'debit1Qty', title: 'D1.Qty', width: columnWidths[6] || 85, format: "{0:n}" },
+    { field: 'debit1Code', title: 'D1.Code', width: columnWidths[7] || 85, filterable: { multi: true } },
+    { field: 'debit2Qty', title: 'D2.Qty', width: columnWidths[8] || 85, format: "{0:n}" },
+    { field: 'debit2Code', title: 'D2.Code', width: columnWidths[9] || 85, filterable: { multi: true } },
+    { field: 'credit1Qty', title: 'C1.Qty', width: columnWidths[10] || 85, format: "{0:n}" },
+    { field: 'credit1Code', title: 'C1.Code', width: columnWidths[11] || 85, filterable: { multi: true } },
+    { field: 'credit2Qty', title: 'C2.Qty', width: columnWidths[12] || 85, format: "{0:n}" },
+    { field: 'credit2Code', title: 'C2.Code', width: columnWidths[13] || 85, filterable: { multi: true } },
+    { field: 'value', width: columnWidths[14] || 100, format: "{0:n}", aggregates: ["sum"], footerTemplate: '∑ #=kendo.toString(sum,"n2") + " " + currencyCode() #'},
+    { field: 'fee_qty', width: columnWidths[15] || 80 , format: "{0:#.########}"},
     { field: 'fee_value' , format: "{0:#.########}"},
   ]
 }
@@ -66,6 +74,9 @@ export function historyColumns(columnWidths: number[] = []): kendo.ui.GridColumn
 export function historyTooltip(e: any) {
   var text = e.target.text().trim(); // element for which the tooltip is shown
   switch (text) {
+    case "Addr1": return "Address";
+    case "Addr2": return "Address 2";
+    case "D1.Qty": return "Debit 1 Quantity";
     case "D1.Qty": return "Debit 1 Quantity";
     case "D1.Code": return "Debit 1 Token Code";
     case "D1.Value": return "Debit 1 Value";
@@ -133,7 +144,8 @@ interface HistoryApiItem {
  */
 interface HistoryItem {
   dt: Date;
-  adr: string;
+  adr1: string;
+  adr2: string;
   cat: string;
   tx_id: string;
   blk_id: number;
@@ -162,9 +174,12 @@ interface HistoryItem {
  * @returns {HistoryItem} A processed history item object.
  */
 function historyData(item: HistoryApiItem): HistoryItem {
+  const [a1, ...a2Arr] = item.adr.split(';');
+  const a2 = a2Arr.length > 0 ? a2Arr.join(';') : '';
   const historyItem: HistoryItem = {
     dt: new Date(item.dt),
-    adr: item.adr,
+    adr1: a1,
+    adr2: a2,
     cat: item.cat,
     tx_id: item.tx_id,
     blk_id: item.blk_id,
