@@ -145,7 +145,7 @@ interface HistoryApiItem {
 interface HistoryItem {
   dt: Date;
   adr1: string;
-  adr2: string;
+  adr2?: string;
   cat: string;
   tx_id: string;
   blk_id: number;
@@ -175,7 +175,7 @@ interface HistoryItem {
  */
 function historyData(item: HistoryApiItem): HistoryItem {
   const [a1, ...a2Arr] = item.adr.split(';');
-  const a2 = a2Arr.length > 0 ? a2Arr.join(';') : '';
+  const a2 = a2Arr.length > 0 ? a2Arr.join(';') : undefined;
   const historyItem: HistoryItem = {
     dt: new Date(item.dt),
     adr1: a1,
